@@ -1,5 +1,4 @@
-package toyotabackend.toyotabackend.dto;
-
+package toyotabackend.toyotabackend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDTO {
+public class AddedUserResponse {
 
+    public String name;
     public String username;
-    public String password;
+    public String email;
+    public String token;
+
 }

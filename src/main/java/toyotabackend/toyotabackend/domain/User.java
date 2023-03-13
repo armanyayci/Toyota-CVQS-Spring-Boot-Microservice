@@ -1,5 +1,6 @@
 package toyotabackend.toyotabackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,13 +22,13 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "Name")
+    @Column(name = "Name",nullable = false, length = 30)
     private String name;
-    @Column(name = "Username")
+    @Column(name = "Username",nullable = false, length = 50)
     private String username;
-    @Column(name = "Password")
+    @Column(name = "Password",nullable = false, length = 50)
     private String password;
-    @Column(name = "Email")
+    @Column(name = "Email",nullable = false, length = 50)
     private String email;
     @Column(name = "isActive")
     private boolean isActive;
@@ -38,6 +39,7 @@ public class User implements UserDetails {
             , joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
             , inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
+    @JsonIgnore
     private List<Role> roles;
 
     @Override
@@ -64,7 +66,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+
+        if (isActive){
+            return true;
+        }
+        return false;
     }
 }
 

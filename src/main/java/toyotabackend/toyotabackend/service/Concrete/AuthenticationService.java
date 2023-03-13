@@ -1,4 +1,4 @@
-package toyotabackend.toyotabackend.service;
+package toyotabackend.toyotabackend.service.Concrete;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
@@ -11,9 +11,9 @@ import toyotabackend.toyotabackend.dao.RoleRepository;
 import toyotabackend.toyotabackend.dao.UserRepository;
 import toyotabackend.toyotabackend.domain.Role;
 import toyotabackend.toyotabackend.domain.User;
-import toyotabackend.toyotabackend.dto.LoginDTO;
-import toyotabackend.toyotabackend.dto.RegisterDTO;
-import toyotabackend.toyotabackend.dto.JwtResponse;
+import toyotabackend.toyotabackend.dto.request.LoginDTO;
+import toyotabackend.toyotabackend.dto.request.RegisterDTO;
+import toyotabackend.toyotabackend.dto.response.JwtResponse;
 import toyotabackend.toyotabackend.security.JwtTokenProvider;
 
 import javax.persistence.EntityNotFoundException;
@@ -30,6 +30,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+
 
     public JwtResponse save(RegisterDTO registerDTO) {
 

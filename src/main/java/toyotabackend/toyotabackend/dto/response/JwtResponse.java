@@ -1,4 +1,4 @@
-package toyotabackend.toyotabackend.dto;
+package toyotabackend.toyotabackend.dto.response;
 
 
 import lombok.AllArgsConstructor;
