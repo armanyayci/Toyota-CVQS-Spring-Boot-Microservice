@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import toyotabackend.toyotabackend.domain.User;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -24,7 +23,7 @@ public class RegisterDTO {
     @Size(min = 4, max = 50,message = "email can not be less than 4 and more than 32")
     @NotEmpty
     private String email;
-    @Size(min = 4, max = 50,message = "password can not be less than 4 and more than 32")
+    @Size(min = 4, max = 100,message = "password can not be less than 4 and more than 32")
     @NotEmpty
     private String password;
     @NotNull

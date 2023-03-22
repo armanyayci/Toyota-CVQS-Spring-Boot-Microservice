@@ -2,7 +2,7 @@ package toyotabackend.toyotabackend.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import toyotabackend.toyotabackend.domain.Role;
+import toyotabackend.toyotabackend.domain.Entity.Role;
 
 import java.util.Optional;
 

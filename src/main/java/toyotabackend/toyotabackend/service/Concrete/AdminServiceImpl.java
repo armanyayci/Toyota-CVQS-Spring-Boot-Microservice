@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import toyotabackend.toyotabackend.dao.RoleRepository;
 import toyotabackend.toyotabackend.dao.UserRepository;
-import toyotabackend.toyotabackend.domain.Role;
-import toyotabackend.toyotabackend.domain.User;
+import toyotabackend.toyotabackend.domain.Entity.Role;
+import toyotabackend.toyotabackend.domain.Entity.User;
 import toyotabackend.toyotabackend.dto.request.AddRemoveRoleDTO;
 import toyotabackend.toyotabackend.dto.request.RegisterDTO;
 import toyotabackend.toyotabackend.dto.request.UpdateUserDTO;
@@ -40,7 +40,7 @@ public class AdminServiceImpl implements AdminService {
             List<Role> rolelist = new ArrayList<>();
 
             rolelist.add(roleRepository.findById(registerDTO.getRoleId()).orElseThrow
-                    (()-> new EntityNotFoundException("Role is not found with id -> "+ registerDTO.getRoleId())));
+                    (()-> new NullPointerException("Role is not found with id -> "+ registerDTO.getRoleId())));
 
             User user = User.builder()
                     .username(registerDTO.getUsername())
@@ -60,6 +60,9 @@ public class AdminServiceImpl implements AdminService {
                     .username(registerDTO.getUsername())
                     .token(token).build();
         }
+        catch (UnsupportedOperationException | ClassCastException | NullPointerException | IllegalArgumentException e){
+            logger.warn("role add operation has problem");
+            throw e;}
         catch (Exception e ){
             logger.warn("problem occurred when saving register user to db ");
             throw e;
@@ -69,7 +72,7 @@ public class AdminServiceImpl implements AdminService {
     public void softDeleteUser(int id){
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new EntityNotFoundException("User not found with username -> " + id));
+                    ()-> new NullPointerException("User not found with username -> " + id));
             user.setActive(false);
             userRepository.save(user);
             logger.info("user is soft deleted with id -> "+ id);
@@ -84,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
     public void softActiveUser(int id) {
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new EntityNotFoundException("User not found with username -> "+ id));
+                    ()-> new NullPointerException("User not found with username -> "+ id));
             user.setActive(true);
             userRepository.save(user);
             logger.info("user is activated with id -> "+ id);
@@ -100,7 +103,7 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new UsernameNotFoundException("User not found with username -> " + dto.getUsername()));
+                    ()-> new NullPointerException("User not found with username -> " + dto.getUsername()));
 
             user.setName(dto.getName());
             user.setEmail(dto.getEmail());
@@ -121,22 +124,26 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             User user = userRepository.findByusername(dto.getUsername()).orElseThrow(
-                    ()-> new EntityNotFoundException("User not found with username -> " + dto.getUsername()));
+                    ()-> new NullPointerException("User not found with username -> " + dto.getUsername()));
 
             Role role = roleRepository.findById(dto.getRoleId()).orElseThrow(
-                    ()-> new EntityNotFoundException("Role is not found with id -> "+ dto.getRoleId()));
+                    ()-> new NullPointerException("Role is not found with id -> "+ dto.getRoleId()));
 
 
             List<Role> roles = user.getRoles();
 
             if (roles.contains(role)){
                 logger.debug("user already has role with id -> " + dto.getRoleId());
-                throw new IllegalArgumentException("User already has that role");
+                throw new ClassCastException();
             }
 
             roles.add(role);
             user.setRoles(roles);
             userRepository.save(user);
+        }
+        catch (UnsupportedOperationException | ClassCastException | NullPointerException | IllegalArgumentException e){
+            logger.warn("role add operation has problem");
+            throw e;
         }
         catch (Exception e) {
             logger.warn("add role operation errored in service.");
@@ -147,19 +154,23 @@ public class AdminServiceImpl implements AdminService {
     public void removeRole(AddRemoveRoleDTO dto) {
         try {
             User user = userRepository.findByusername(dto.getUsername()).orElseThrow(
-                    ()-> new EntityNotFoundException("User not found with username -> " + dto.getUsername()));
+                    ()-> new NullPointerException("User not found with username -> " + dto.getUsername()));
 
             Role role = roleRepository.findById(dto.getRoleId()).orElseThrow(
-                    ()-> new EntityNotFoundException("Role not found wih id -> " + dto.getRoleId()));
+                    ()-> new NullPointerException("Role not found wih id -> " + dto.getRoleId()));
 
             List<Role> roles = user.getRoles();
 
             if (!roles.contains(role)){
                 logger.debug("User has no role with that id -> "+ dto.getRoleId());
-                throw new IllegalArgumentException("user has no role with that id -> "+ dto.getRoleId());
+                throw new ClassCastException("user has no role with that id -> "+ dto.getRoleId());
             }
             roles.remove(role);
             userRepository.save(user);
+        }
+        catch (UnsupportedOperationException | ClassCastException | NullPointerException e){
+            logger.warn("role remove operation has problem");
+            throw e;
         }
         catch (Exception e){
             logger.warn("remove role operation errored in service.");
@@ -192,7 +203,7 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new EntityNotFoundException("User not found with id -> " + id));
+                    ()-> new NullPointerException("User not found with id -> " + id));
 
             return UserViewResponse.builder()
                     .username(user.getUsername())
@@ -209,13 +220,3 @@ public class AdminServiceImpl implements AdminService {
 
     }
 }
-
-
-
-
-
-
-
-
-
-

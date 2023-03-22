@@ -1,4 +1,4 @@
-package toyotabackend.toyotabackend.domain;
+package toyotabackend.toyotabackend.domain.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -7,7 +7,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class User implements UserDetails {
     private String name;
     @Column(name = "Username",nullable = false, length = 50)
     private String username;
-    @Column(name = "Password",nullable = false, length = 50)
+    @Column(name = "Password",nullable = false, length = 100)
     private String password;
     @Column(name = "Email",nullable = false, length = 50)
     private String email;

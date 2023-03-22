@@ -1,4 +1,4 @@
-package toyotabackend.toyotabackend.domain;
+package toyotabackend.toyotabackend.domain.Entity;
 
 
 import lombok.AllArgsConstructor;

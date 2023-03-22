@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import toyotabackend.toyotabackend.domain.User;
+import toyotabackend.toyotabackend.domain.Entity.User;
 
 
 @Data

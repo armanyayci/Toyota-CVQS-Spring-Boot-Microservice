@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import toyotabackend.toyotabackend.dao.RoleRepository;
 import toyotabackend.toyotabackend.dao.UserRepository;
-import toyotabackend.toyotabackend.domain.Role;
-import toyotabackend.toyotabackend.domain.User;
+import toyotabackend.toyotabackend.domain.Entity.Role;
+import toyotabackend.toyotabackend.domain.Entity.User;
 import toyotabackend.toyotabackend.dto.request.LoginDTO;
 import toyotabackend.toyotabackend.dto.request.RegisterDTO;
 import toyotabackend.toyotabackend.dto.response.JwtResponse;
@@ -38,7 +39,7 @@ public class AuthenticationService {
             List<Role> roles = new ArrayList<>();
 
             roles.add(roleRepository.findById(registerDTO.getRoleId()).orElseThrow
-                    (()-> new EntityNotFoundException("Role not found with id "+ registerDTO.getRoleId())));
+                    (()-> new NullPointerException("Role not found with id "+ registerDTO.getRoleId())));
 
             User user = User.builder()
                     .username(registerDTO.getUsername())
@@ -55,7 +56,7 @@ public class AuthenticationService {
             return JwtResponse.builder().Token(token).build();
         }
         catch (Exception e ){
-            logger.warn("problem occured when saving register user to db ");
+            logger.warn("problem occurred when saving register user to db ");
             throw e;
         }
     }
@@ -65,13 +66,17 @@ public class AuthenticationService {
             authenticationManager.authenticate
                     (new UsernamePasswordAuthenticationToken(loginDto.getUsername(),loginDto.getPassword()));
             User user = userRepository.findByusername(loginDto.getUsername())
-                    .orElseThrow(()-> new UsernameNotFoundException("username not found"));
+                    .orElseThrow(()-> new NullPointerException("username not found"));
 
             String token = jwtTokenProvider.generateToken(user);
             return JwtResponse.builder().Token(token).build();
         }
+        catch (AuthenticationException e){
+            logger.warn("authentication couldn't authenticate to user.");
+            throw e;
+        }
         catch (Exception e){
-            logger.warn("user couldnt authenticated");
+            logger.warn("user couldn't authenticated");
             throw e;
         }
     }

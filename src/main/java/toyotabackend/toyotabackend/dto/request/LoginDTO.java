@@ -14,7 +14,7 @@ public class LoginDTO {
     @Size(min = 4, max = 50,message = "username can not be less than 4 and more than 32")
     @NotEmpty
     public String username;
-    @Size(min = 4, max = 50,message = "password can not be less than 4 and more than 32")
+    @Size(min = 4, max = 100,message = "password can not be less than 4 and more than 32")
     @NotEmpty
     public String password;
 }
