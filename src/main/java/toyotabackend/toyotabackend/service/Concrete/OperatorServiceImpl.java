@@ -14,6 +14,7 @@ import toyotabackend.toyotabackend.dao.VehicleRepository;
 import toyotabackend.toyotabackend.domain.Vehicle.TT_Defect_Location;
 import toyotabackend.toyotabackend.domain.Vehicle.TT_Vehicle;
 import toyotabackend.toyotabackend.domain.Vehicle.TT_Vehicle_Defect;
+import toyotabackend.toyotabackend.dto.request.AddLocationDto;
 import toyotabackend.toyotabackend.service.Abstract.OperatorService;
 
 import java.io.*;
@@ -80,6 +81,23 @@ public class OperatorServiceImpl implements OperatorService {
             logger.warn("error occurred while uploading db to defect data.");
             throw e;
         }
+    }
+
+    @Override
+    public void addLocation(AddLocationDto dto) {
+
+        TT_Vehicle_Defect defect = vehicleDefectRepository.findById(dto.getDefectId()).orElseThrow(
+                ()-> new NullPointerException("defect not found with id -> "+ dto.getDefectId()));
+
+        TT_Defect_Location location = TT_Defect_Location.builder()
+                .ttVehicleDefect(defect)
+                .x1(dto.getX1())
+                .x2(dto.getX2())
+                .x3(dto.getX3())
+                .y1(dto.getY1())
+                .y2(dto.getY2())
+                .y3(dto.getY3()).build();
+        vehicleDefectLocationRepository.save(location);
     }
 }
 
