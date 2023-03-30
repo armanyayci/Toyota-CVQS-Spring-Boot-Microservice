@@ -1,9 +1,5 @@
 package toyotabackend.toyotabackend.domain.Vehicle;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.fasterxml.jackson.databind.ser.std.ByteArraySerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,7 +49,7 @@ public class TT_Defect_Location {
 
 
     public String getCordinate() {
-        return String.format("[P(%s,%s}),P({%s,%s),P(%s,%s)",x1,y1,x2,y2,x3,y3);
+        return String.format("[P(%s,%s),P(%s,%s),P(%s,%s)",x1,y1,x2,y2,x3,y3);
     }
 
 

@@ -1,16 +1,12 @@
 package toyotabackend.toyotabackend.domain.Vehicle;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.fasterxml.jackson.databind.ser.std.ByteArraySerializer;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.List;
 
 @Table(name = "TT_Vehicle_Defect")
