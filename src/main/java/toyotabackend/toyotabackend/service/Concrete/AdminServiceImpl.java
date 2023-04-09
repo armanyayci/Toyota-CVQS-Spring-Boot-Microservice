@@ -2,7 +2,6 @@ package toyotabackend.toyotabackend.service.Concrete;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import toyotabackend.toyotabackend.dao.RoleRepository;
@@ -18,10 +17,8 @@ import toyotabackend.toyotabackend.dto.response.UpdatedUserResponse;
 import toyotabackend.toyotabackend.security.JwtTokenProvider;
 import toyotabackend.toyotabackend.service.Abstract.AdminService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,13 +31,13 @@ public class AdminServiceImpl implements AdminService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public AddedUserResponse adminAdded(RegisterDTO registerDTO)
+    public AddedUserResponse AuthorizeNewUser(RegisterDTO registerDTO)
     {
         try {
             List<Role> rolelist = new ArrayList<>();
 
             rolelist.add(roleRepository.findById(registerDTO.getRoleId()).orElseThrow
-                    (()-> new NullPointerException("Role is not found with id -> "+ registerDTO.getRoleId())));
+                    (()-> new NullPointerException(String.format("User not found with username: %s",registerDTO.getRoleId()))));
 
             User user = User.builder()
                     .username(registerDTO.getUsername())
@@ -50,8 +47,8 @@ public class AdminServiceImpl implements AdminService {
                     .isActive(true)
                     .roles(rolelist)
                     .build();
-
             userRepository.save(user);
+
             var token = jwtTokenProvider.generateToken(user);
             logger.info("user saved to database");
             return AddedUserResponse.builder()
@@ -61,21 +58,17 @@ public class AdminServiceImpl implements AdminService {
                     .token(token).build();
         }
         catch (UnsupportedOperationException | ClassCastException | NullPointerException | IllegalArgumentException e){
-            logger.warn("role add operation has problem");
+            logger.warn("problem occurred when adding role to list");
             throw e;}
-        catch (Exception e ){
-            logger.warn("problem occurred when saving register user to db ");
-            throw e;
-        }
     }
     @Override
     public void softDeleteUser(int id){
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new NullPointerException("User not found with username -> " + id));
+                    ()-> new NullPointerException(String.format("User not found with username: %s",id)));
             user.setActive(false);
             userRepository.save(user);
-            logger.info("user is soft deleted with id -> "+ id);
+            logger.info(String.format("user is soft deleted with id : %s", id));
         }
         catch (Exception e ){
             logger.warn("user soft delete operation errored in service.");
@@ -87,14 +80,13 @@ public class AdminServiceImpl implements AdminService {
     public void softActiveUser(int id) {
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new NullPointerException("User not found with username -> "+ id));
+                    ()-> new NullPointerException(String.format("User not found with username: %s",id)));
             user.setActive(true);
             userRepository.save(user);
-            logger.info("user is activated with id -> "+ id);
-
+            logger.info(String.format("user is activated with id: %s ",id));
         }
         catch (Exception e){
-            logger.warn("Soft update operation errored in service.");
+            logger.warn("error occurred when activating user.");
             throw e;
         }
     }
@@ -103,7 +95,7 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new NullPointerException("User not found with username -> " + dto.getUsername()));
+                    ()-> new NullPointerException(String.format("User not found with username: %s",id)));
 
             user.setName(dto.getName());
             user.setEmail(dto.getEmail());
@@ -124,16 +116,20 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             User user = userRepository.findByusername(dto.getUsername()).orElseThrow(
-                    ()-> new NullPointerException("User not found with username -> " + dto.getUsername()));
+                    ()-> new NullPointerException(String.format("User not found with username: %s", dto.getUsername())));
 
             Role role = roleRepository.findById(dto.getRoleId()).orElseThrow(
-                    ()-> new NullPointerException("Role is not found with id -> "+ dto.getRoleId()));
+                    ()-> new NullPointerException(String.format("Role not found with role id: %s", dto.getRoleId())));
 
 
             List<Role> roles = user.getRoles();
 
-            if (roles.contains(role)){
-                logger.debug("user already has role with id -> " + dto.getRoleId());
+            if (roles == null) {
+                roles = new ArrayList<>();
+                user.setRoles(roles);
+            }
+            else if (roles.contains(role)){
+                logger.debug(String.format("user already has role with id : %s ",dto.getRoleId()));
                 throw new ClassCastException();
             }
 
@@ -142,11 +138,7 @@ public class AdminServiceImpl implements AdminService {
             userRepository.save(user);
         }
         catch (UnsupportedOperationException | ClassCastException | NullPointerException | IllegalArgumentException e){
-            logger.warn("role add operation has problem");
-            throw e;
-        }
-        catch (Exception e) {
-            logger.warn("add role operation errored in service.");
+            logger.warn("error occurred while adding role to list.");
             throw e;
         }
     }
@@ -154,69 +146,34 @@ public class AdminServiceImpl implements AdminService {
     public void removeRole(AddRemoveRoleDTO dto) {
         try {
             User user = userRepository.findByusername(dto.getUsername()).orElseThrow(
-                    ()-> new NullPointerException("User not found with username -> " + dto.getUsername()));
+                    ()-> new NullPointerException(String.format("User not found with username: %s " , dto.getUsername())));
 
             Role role = roleRepository.findById(dto.getRoleId()).orElseThrow(
-                    ()-> new NullPointerException("Role not found wih id -> " + dto.getRoleId()));
+                    ()-> new NullPointerException(String.format("Role not found wih id: %s ", dto.getRoleId())));
 
             List<Role> roles = user.getRoles();
 
             if (!roles.contains(role)){
-                logger.debug("User has no role with that id -> "+ dto.getRoleId());
-                throw new ClassCastException("user has no role with that id -> "+ dto.getRoleId());
+                logger.debug(String.format("User has no role with that id: %s ", dto.getRoleId()));
+                throw new NullPointerException(String.format("user has no role with that id %s ", dto.getRoleId()));
             }
             roles.remove(role);
-            userRepository.save(user);
-        }
+            user.setRoles(roles);
+            userRepository.save(user);}
         catch (UnsupportedOperationException | ClassCastException | NullPointerException e){
-            logger.warn("role remove operation has problem");
-            throw e;
-        }
-        catch (Exception e){
-            logger.warn("remove role operation errored in service.");
+            logger.warn("when removing role from the list it throws error.");
             throw e;
         }
     }
     @Override
     public List<UserViewResponse> getUsers() {
-        try {
             List<User> users = userRepository.getActiveUsers();
-            List<UserViewResponse> dtos = new ArrayList<>();
-            for(User user : users) {
-                UserViewResponse dto = new UserViewResponse();
-                dto.name = user.getName();
-                dto.email = user.getEmail();
-                dto.username = user.getUsername();
-                dto.roleList = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
-
-                dtos.add(dto);
-            }
-            return dtos;
+            return UserViewResponse.convertUserListToUserViewResponse(users);
         }
-        catch (Exception e){
-            logger.warn("get users operation errored in service.");
-            throw e;
-        }
-    }
     @Override
     public UserViewResponse getUser(int id) {
-
-        try {
             User user = userRepository.findById(id).orElseThrow(
-                    ()-> new NullPointerException("User not found with id -> " + id));
-
-            return UserViewResponse.builder()
-                    .username(user.getUsername())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .roleList(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-                    .build();
-        }
-
-        catch (Exception e){
-            logger.warn("get user operation errored in service.");
-            throw e;
-        }
-
+                    ()-> new NullPointerException(String.format("User not found with id: %s ", id)));
+            return UserViewResponse.convertUserViewResponse(user);
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -26,7 +27,8 @@ public class RegisterDTO {
     @Size(min = 4, max = 100,message = "password can not be less than 4 and more than 32")
     @NotEmpty
     private String password;
-    @NotNull
+
+    //@Nullable
     private int roleId;
 
 }

@@ -24,7 +24,7 @@ public class AdminController {
     @PostMapping("/add")
     public ResponseEntity<AddedUserResponse> add(@Valid @RequestBody RegisterDTO registerDTO){
 
-        return ResponseEntity.ok(adminServiceImpl.adminAdded(registerDTO));
+        return ResponseEntity.ok(adminServiceImpl.AuthorizeNewUser(registerDTO));
     }
 
     @GetMapping("/delete/{id}")

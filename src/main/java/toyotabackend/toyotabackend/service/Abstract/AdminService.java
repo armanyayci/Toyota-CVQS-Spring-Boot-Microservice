@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AdminService {
 
-    AddedUserResponse adminAdded(RegisterDTO registerDTO);
+    AddedUserResponse AuthorizeNewUser(RegisterDTO registerDTO);
     void softDeleteUser(int id);
     void softActiveUser(int id);
     UpdatedUserResponse updateUser(UpdateUserDTO dto, int id);
