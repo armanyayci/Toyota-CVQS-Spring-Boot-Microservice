@@ -38,9 +38,8 @@ public class OperatorServiceImpl implements OperatorService {
             String description = jsonNode.get("description").asText();
             Integer id = jsonNode.get("vehicle_id").asInt();
 
-
             TT_Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(
-                    ()-> new NullPointerException("Vehicle couldn't find with id -> " + id));
+                    ()-> new NullPointerException(String.format("Vehicle couldn't find with id: %s", id)));
 
             TT_Vehicle_Defect vehicleDefect = TT_Vehicle_Defect.builder()
                     .description(description)
@@ -49,10 +48,8 @@ public class OperatorServiceImpl implements OperatorService {
                     .build();
 
             vehicleDefectRepository.save(vehicleDefect);
-
             List<TT_Vehicle_Defect> entities = vehicleDefectRepository.findAll();
-
-            TT_Vehicle_Defect vehicle_defect = entities.get(entities.size()-1);
+            TT_Vehicle_Defect savedVehicleDefect = entities.get(entities.size()-1);
 
             int x1 = jsonNode.get("x1").asInt();
             int y1 = jsonNode.get("y1").asInt();
@@ -61,25 +58,24 @@ public class OperatorServiceImpl implements OperatorService {
             int x3 = jsonNode.get("x3").asInt();
             int y3 = jsonNode.get("y3").asInt();
 
-            TT_Defect_Location vehicle_Location = TT_Defect_Location.builder()
+            TT_Defect_Location defectLocation = TT_Defect_Location
+                    .builder()
                     .x1(x1)
                     .y1(y1)
                     .x2(x2)
                     .y2(y2)
                     .x3(x3)
                     .y3(y3)
-                    .ttVehicleDefect(vehicle_defect)
+                    .ttVehicleDefect(savedVehicleDefect)
                     .build();
-            vehicleDefectLocationRepository.save(vehicle_Location);
+            vehicleDefectLocationRepository.save(defectLocation);
         }
-        catch (IOException e){
+        catch (JsonProcessingException e) {
+            logger.warn("error occurred while processing the json in upload service.");
             e.printStackTrace();
-            logger.warn("I/O exception of some sort has occurred");
-            throw new RuntimeException();
-        }
-        catch (Exception e){
-            logger.warn("error occurred while uploading db to defect data.");
-            throw e;
+        } catch (IOException e) {
+            logger.warn("error occurred while uploading file in upload service.");
+            e.printStackTrace();
         }
     }
 
@@ -87,7 +83,7 @@ public class OperatorServiceImpl implements OperatorService {
     public void addLocation(AddLocationDto dto) {
 
         TT_Vehicle_Defect defect = vehicleDefectRepository.findById(dto.getDefectId()).orElseThrow(
-                ()-> new NullPointerException("defect not found with id -> "+ dto.getDefectId()));
+                ()-> new NullPointerException(String.format("defect not found with id: %s ", dto.getDefectId())));
 
         TT_Defect_Location location = TT_Defect_Location.builder()
                 .ttVehicleDefect(defect)

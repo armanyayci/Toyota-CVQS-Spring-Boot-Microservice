@@ -1,8 +1,6 @@
 package toyotabackend.toyotabackend.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +21,7 @@ public class TeamleaderController
     private final TeamLeaderServiceImpl teamLeaderService;
 
     @GetMapping(value = "/get/{id}")
-    public ResponseEntity <byte[]> getFile(@PathVariable("id") int id) {
+    public ResponseEntity <byte[]> getDrawnImage(@PathVariable("id") int id) {
 
             byte[] defect = teamLeaderService.drawById(id);
 
@@ -33,26 +31,26 @@ public class TeamleaderController
     }
 
 
-    @GetMapping("vehicledefectlist/{id}")
+    @GetMapping("vehicledefectlist/{name}")
     public ResponseEntity<List<DefectViewResponse>> ListOfVehicleDefects
-            (@PathVariable("id") int id,
+            (@PathVariable("name") String name,
              @RequestParam(defaultValue = "0") int page,
-             @RequestParam(defaultValue = "10") int size,
-             @RequestParam(defaultValue = "id") String sortBy){
+             @RequestParam(defaultValue = "20") int size,
+             @RequestParam(defaultValue = "id") String sortBy,
+             @RequestParam(defaultValue = "0") int filterYear){
 
-
-        return ResponseEntity.ok(teamLeaderService.getListOfVehicleDefects(id,page,size,sortBy));
+        return ResponseEntity.ok(teamLeaderService.getListOfVehicleDefectsWithName(name,page,size,sortBy,filterYear));
     }
 
     @GetMapping("/defectlist")
     public ResponseEntity <List<DefectViewResponse>> listDefects
             (@RequestParam(defaultValue = "0") int page,
              @RequestParam(defaultValue = "10") int size,
-             @RequestParam(defaultValue = "id") String sortBy)
-    {
-        return ResponseEntity.ok(teamLeaderService.getListOfDefects(page,size,sortBy));
-    }
+             @RequestParam(defaultValue = "id") String sortBy,
+             @RequestParam(defaultValue = "0") int filterYear) {
 
+        return ResponseEntity.ok(teamLeaderService.getListOfDefects(page,size,sortBy,filterYear));
+    }
 }
 
 

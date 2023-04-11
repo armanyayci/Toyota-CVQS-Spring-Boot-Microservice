@@ -16,6 +16,14 @@ import javax.transaction.Transactional;
 @Transactional
 public interface VehicleDefectRepository extends JpaRepository<TT_Vehicle_Defect,Integer>
 {
-    @Query("select t from TT_Vehicle_Defect t where t.vehicle.id=:id")
-    Page<TT_Vehicle_Defect> findDefectsByVehicleId(@Param("id") int id, Pageable pageable);
+    @Query("select t from TT_Vehicle_Defect t where t.vehicle.name=:name")
+    Page<TT_Vehicle_Defect> findDefectsByVehicleId(@Param("name") String name, Pageable pageable);
+
+    @Query("select t from TT_Vehicle_Defect t where t.vehicle.name=:name and t.vehicle.model_year =:modelYear")
+    Page<TT_Vehicle_Defect> findDefectsByVehicleNameWithFilter(@Param("name") String name, Pageable pageable, int modelYear);
+
+    @Query("select t from TT_Vehicle_Defect t where t.vehicle.model_year =:modelYear")
+    Page<TT_Vehicle_Defect> findAllDefectWithFilter(Pageable pageable,@Param("modelYear") int modelYear);
+
+
 }

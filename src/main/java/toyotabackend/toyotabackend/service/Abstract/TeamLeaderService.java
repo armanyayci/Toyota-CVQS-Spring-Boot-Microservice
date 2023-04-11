@@ -8,7 +8,7 @@ public interface TeamLeaderService {
 
     byte[] drawById(int id);
 
-    List<DefectViewResponse> getListOfVehicleDefects(int id,int pageNo, int pageSize, String sortBy);
+    List<DefectViewResponse> getListOfVehicleDefectsWithName(String name,int pageNo, int pageSize, String sortBy, int filterYear);
 
-    List<DefectViewResponse> getListOfDefects(int pageNo, int pageSize, String sortBy );
+    List<DefectViewResponse> getListOfDefects(int pageNo, int pageSize, String sortBy,int filterYear);
 }

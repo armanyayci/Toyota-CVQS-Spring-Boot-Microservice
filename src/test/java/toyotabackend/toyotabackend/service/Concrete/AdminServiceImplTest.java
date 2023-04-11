@@ -125,7 +125,7 @@ class AdminServiceImplTest extends TestUtils {
 
 
     @Test
-    public void updateUser_whenCalledWithUpdateUserDTOAndIdParameter_itShouldReturnValidUpdatedUserResponse(){
+    public void updateUser_whenCalledWithValidUpdateUserDTOAndIdParameter_itShouldReturnValidUpdatedUserResponse(){
 
         int userId = 1;
         User user = generateUser();
@@ -155,7 +155,7 @@ class AdminServiceImplTest extends TestUtils {
     }
 
     @Test
-    public void addRole_whenCalledWithAddRemoveRoleDTO_itShouldSuccess(){
+    public void addRole_whenCalledWithValidAddRemoveRoleDTO_itShouldSuccess(){
 
         User user = generateUser();
         Role role = generateRole();
@@ -220,7 +220,7 @@ class AdminServiceImplTest extends TestUtils {
         verify(userRepository,times(0)).save(user);
     }
     @Test
-    public void removeRole_whenCalledWithAddRemoveRoleDTO_itShouldSuccess() {
+    public void removeRole_whenCalledWithValidAddRemoveRoleDTO_itShouldSuccess() {
 
         User user = generateUser();
         Role role = generateRole();

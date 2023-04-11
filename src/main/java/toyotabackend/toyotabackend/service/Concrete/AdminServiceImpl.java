@@ -36,8 +36,11 @@ public class AdminServiceImpl implements AdminService {
         try {
             List<Role> rolelist = new ArrayList<>();
 
-            rolelist.add(roleRepository.findById(registerDTO.getRoleId()).orElseThrow
-                    (()-> new NullPointerException(String.format("User not found with username: %s",registerDTO.getRoleId()))));
+            if(registerDTO.getRoleId() != 0 ) {
+                rolelist.add(roleRepository.findById(registerDTO.getRoleId()).orElseThrow
+                        (()-> new NullPointerException(String.format("Role not found with roleId: %s",registerDTO.getRoleId()))));
+            }
+
 
             User user = User.builder()
                     .username(registerDTO.getUsername())
