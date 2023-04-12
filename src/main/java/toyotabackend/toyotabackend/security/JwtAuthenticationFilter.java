@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
         if (header == null || !header.startsWith("Bearer ")){
 
             filterChain.doFilter(request,response);
-            logger.warn("header is null or not starts with bearer.!");
+            logger.info("header is null or not starts with bearer.!");
             return;
         }
         jwt = header.substring(7);

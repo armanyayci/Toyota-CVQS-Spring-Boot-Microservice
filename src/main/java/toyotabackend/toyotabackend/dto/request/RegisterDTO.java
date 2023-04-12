@@ -25,10 +25,8 @@ public class RegisterDTO {
     @NotEmpty
     private String email;
     @Size(min = 4, max = 100,message = "password can not be less than 4 and more than 32")
-    @NotEmpty
     private String password;
-
-    //@Nullable
+    @NotEmpty
     private int roleId;
 
 }

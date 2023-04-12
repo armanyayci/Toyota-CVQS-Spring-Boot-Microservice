@@ -20,7 +20,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "Name")
+    @Column(name = "Name",nullable = false)
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL

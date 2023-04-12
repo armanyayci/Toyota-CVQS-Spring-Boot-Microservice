@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import org.springframework.security.core.AuthenticationException;
 import toyotabackend.toyotabackend.TestUtils;
 import toyotabackend.toyotabackend.dao.UserRepository;
 import toyotabackend.toyotabackend.domain.Entity.User;
@@ -76,7 +77,27 @@ class AuthenticationServiceTest extends TestUtils {
                 dto.getUsername(),
                 dto.getPassword()));
     }
+    @Test
+    void auth_whenCalledWithInvalidPassword_itShouldThrowAuthenticationException() {
+
+        LoginDTO dto = generateLoginDto();
+        User user = generateUser();
+        user.setPassword("invalidPassword");
+
+        when(userRepository.findByusername(anyString())).thenReturn(Optional.of(user));
+        when(authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword())))
+                .thenThrow(new AuthenticationException("Password is not correct.") {});
+
+        assertThrows(AuthenticationException.class, () -> authenticationService.auth(dto));
+        assertNotEquals(user.getPassword(),dto.getPassword());
+    }
 }
+
+
+
+
+
 
 
 

@@ -124,14 +124,9 @@ public class AdminServiceImpl implements AdminService {
             Role role = roleRepository.findById(dto.getRoleId()).orElseThrow(
                     ()-> new NullPointerException(String.format("Role not found with role id: %s", dto.getRoleId())));
 
-
             List<Role> roles = user.getRoles();
 
-            if (roles == null) {
-                roles = new ArrayList<>();
-                user.setRoles(roles);
-            }
-            else if (roles.contains(role)){
+            if (roles.contains(role)){
                 logger.debug(String.format("user already has role with id : %s ",dto.getRoleId()));
                 throw new ClassCastException();
             }

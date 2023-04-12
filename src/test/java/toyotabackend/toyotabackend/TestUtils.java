@@ -2,6 +2,7 @@ package toyotabackend.toyotabackend;
 
 import toyotabackend.toyotabackend.domain.Entity.Role;
 import toyotabackend.toyotabackend.domain.Entity.User;
+import toyotabackend.toyotabackend.domain.Terminal.TerminalCategory;
 import toyotabackend.toyotabackend.domain.Vehicle.EVehicleBody;
 import toyotabackend.toyotabackend.domain.Vehicle.TT_Defect_Location;
 import toyotabackend.toyotabackend.domain.Vehicle.TT_Vehicle;
@@ -147,17 +148,12 @@ public class TestUtils {
                         .ttDetectLocations(generateListOfDefectLocation())
                         .build()).collect(Collectors.toList());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static List<TerminalCategory> generateListOfTerminalCategory() {
+        return IntStream.range(1,3).mapToObj(i->
+                TerminalCategory.builder()
+                        .id(i)
+                        .terminals(new ArrayList<>())
+                        .name("testName")
+                        .build()).collect(Collectors.toList());
+    }
 }

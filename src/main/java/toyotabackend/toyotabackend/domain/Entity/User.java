@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @ManyToMany(cascade = CascadeType.ALL
             , fetch = FetchType.EAGER)
     @JoinTable(name = "user_role"
-            , joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+            , joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id",nullable = false)}
             , inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
     @JsonIgnore

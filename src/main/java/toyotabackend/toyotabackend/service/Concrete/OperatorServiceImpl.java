@@ -1,6 +1,7 @@
 package toyotabackend.toyotabackend.service.Concrete;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +70,10 @@ public class OperatorServiceImpl implements OperatorService {
                     .ttVehicleDefect(savedVehicleDefect)
                     .build();
             vehicleDefectLocationRepository.save(defectLocation);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonMappingException e){
+            logger.warn("error occurred while mapping the json in upload service.");
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
             logger.warn("error occurred while processing the json in upload service.");
             e.printStackTrace();
         } catch (IOException e) {

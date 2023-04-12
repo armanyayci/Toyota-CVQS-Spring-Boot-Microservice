@@ -88,32 +88,6 @@ class OperatorServiceImplTest extends TestUtils {
         assertThrows(NullPointerException.class,() -> operatorService.upload(json,file));
     }
 
-    /*@Test
-    void givenInvalidJson_whenUpload_thenReturnJsonProcessingException() {
-        // Given
-        TT_Vehicle vehicle = generateVehicle();
-        when(vehicleRepository.findById(vehicle.getId())).thenReturn(Optional.of(vehicle));
-        String invalidJson = "{ description: test description, vehicle_id: 123, x1: 10, y1: 20, x2: 30, y2: 40, x3: 50, y3: 60}";
-        MultipartFile file = new MockMultipartFile("test.jpeg", new byte[0]);
-
-        // When
-        assertThrows(JsonProcessingException.class, () -> operatorService.upload(invalidJson, file));
-    }
-
-    @Test
-    void givenInvalidFile_whenUpload_thenReturnIOException() throws IOException {
-        // Given
-        String json =
-                "{\"description\":\"Test defect\",\"vehicle_id\":1,\"x1\":0,\"y1\":0,\"x2\":0,\"y2\":0,\"x3\":0,\"y3\":0}";
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.getBytes()).thenThrow(new IOException());
-
-        // execute the method and verify the exception
-        assertThrows(IOException.class, () -> operatorService.upload(json, file));
-    }*/
-
-
-
     @Test
     public void addLocation_whenCalledWithAddLocationDto_itShouldSuccess(){
 
@@ -135,7 +109,6 @@ class OperatorServiceImplTest extends TestUtils {
         assertEquals(dto.getX3(), location.getX3());
         assertEquals(dto.getY3(), location.getY3());
     }
-
 
     @Test
     public void addLocation_whenCalledWithNotExistVehicleDefect_itShouldThrowNullPointerException(){

@@ -33,6 +33,8 @@ public class SecurityConfig {
                 .hasRole("OPERATOR")
                 .antMatchers("/teamleader/**")
                 .hasRole("TEAMLEADER")
+                .antMatchers("/terminal/**")
+                .hasAnyRole("ADMIN","OPERATOR","TEAMLEADER")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
