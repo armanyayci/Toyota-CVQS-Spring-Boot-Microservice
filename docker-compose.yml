@@ -9,7 +9,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1q2w3e4r
+      POSTGRES_PASSWORD: pwd
       POSTGRES_DB: toyota
     ports:
       - "5432:5432"
@@ -32,7 +32,6 @@ services:
     expose:
       - "8080"
     environment:
-      #- SPRING_PROFILES_ACTIVE=docker
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
     depends_on:
       - discovery-server
@@ -48,9 +47,7 @@ services:
     environment:
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
-      -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
-      #- SPRING_PROFILES_ACTIVE=docker
-      #- SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/toyota
+      -SPRING_DATASOURCE_PASSWORD: pwd
     depends_on:
       - discovery-server
 
@@ -64,9 +61,7 @@ services:
     environment:
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
-      -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
-     # - SPRING_PROFILES_ACTIVE=docker
-     # - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/toyota
+      -SPRING_DATASOURCE_PASSWORD: pwd
     depends_on:
       - discovery-server
       - api-gateway
@@ -81,9 +76,7 @@ services:
     environment:
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
-      -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
-      # - SPRING_PROFILES_ACTIVE=docker
-      # - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/toyota
+      -SPRING_DATASOURCE_PASSWORD: pwd
     depends_on:
       - discovery-server
       - api-gateway
