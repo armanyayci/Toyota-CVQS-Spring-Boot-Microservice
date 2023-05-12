@@ -54,7 +54,7 @@ public class JwtUtil {
             final Claims claims = getAllClaimsFromToken(token);
             return claimsResolver.apply(claims);
         } catch (Exception e) {
-            logger.warn("claims couldnt get from the token with t function");
+            logger.warn("claims couldn't get from the token with t function");
             throw e;
         }
     }

@@ -15,9 +15,9 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>UserManagementAndTerminalService</module>
-        <module>TokenService</module>
-        <module>VehicleDefectService</module>
+        <module>admin-terminal-service</module>
+        <module>token-service</module>
+        <module>operator-teamleader-service</module>
         <module>discovery-server</module>
         <module>api-gateway</module>
     </modules>
@@ -61,6 +61,20 @@
                 <configuration>
                     <source>16</source>
                     <target>16</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <from>
+                        <image>amazoncorretto:17.0.6-alpine</image>
+                    </from>
+                    <to>
+                        <image>registry.hub.docker.com/zormanfayci/${project.artifactId}</image>
+                    </to>
                 </configuration>
             </plugin>
         </plugins>

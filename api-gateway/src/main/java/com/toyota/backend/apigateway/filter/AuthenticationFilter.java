@@ -38,21 +38,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     /**
-     * The AuthenticationFilter class is extended with the
-     * AbstractGatewayFilterFactory class and special configurations are defined.
-     * @param config -> which is inner static class.
-     * <p>
-     *  Apply method of GatewayFilter class controls the rules related
-     * to the JWT structure (includes authorization?, starts with the bearer?).
-     * <p>
-     * Besides the JWT structure, it provides
-     * the access to endpoints with proper roles.
-     * <p>
+     * Applies a GatewayFilter to validate and authorize requests based on JWT authentication.
+     * This filter checks the authorization header of the HTTP request, communicates with a token service to validate the token,
+     * and verifies the roles claimed in the token to determine access to specific endpoints.
+     *
+     * @param config The configuration for the GatewayFilter
+     * @return The GatewayFilter that validates and authorizes requests
+     *
      * @exception RuntimeException : when HTTP request does not contain authorization header
      * @exception RuntimeException : when token couldn't validate in /token-service/
      * @exception ResponseStatusException -> unauthorized status when user does not have role to access the endpoint
-     * <p>
-     * @return chain.filter(exchange) : enables processing of request by sequentially applying other filters in the chain
      */
     @Override
     public GatewayFilter apply(Config config) {
@@ -60,36 +55,37 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             if (validator.isSecured.test(exchange.getRequest())) {
                 //Checks the Authorization header of the HTTP request
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    logger.warn(String.format("HTTP request does not contain authorization header. Request details: %s", exchange.getRequest()));
-                    throw new RuntimeException();
+                    logger.info("HTTP request does not contain authorization header.");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                 }
 
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                if (authHeader != null && authHeader.startsWith("Bearer ")){
                     authHeader = authHeader.substring(7);
                 }
-                //communicating with token-service to validate the token
-                Mono<Boolean> isValid = webClient.build().get()
-                            .uri("http://token-service/auth/check/"+authHeader)
-                            .retrieve()
-                            .bodyToMono(Boolean.class);
 
+                //communicating with token-service to validate the token
                 String finalAuthHeader = authHeader;
-                isValid.subscribe(result -> {
-                    if(!result) {
-                        logger.warn(String.format("According to the token-service response, token couldn't validated. TokenDetails: %s", finalAuthHeader));
-                        throw new RuntimeException();
-                    }});
+                webClient.build().get()
+                        .uri("http://token-service/auth/check/" + authHeader)
+                        .retrieve()
+                        .bodyToMono(Boolean.class)
+                        .subscribe(isValid -> {
+                            if (!isValid) {
+                                logger.warn(String.format("According to the token-service response, token couldn't be validated. username: %s", jwtUtil.getUsernameFromToken(finalAuthHeader)));
+                                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+                            }
+                        });
 
                 // Roles were claimed to token when generating,
                 // and now it is parsing to get the list of roles in order to access the endpoints.
                 List<String> roles = jwtUtil.parseTokenGetRoles(authHeader);
+                String username = jwtUtil.getUsernameFromToken(authHeader);
 
                 // ~/terminal/** endpoints does not need role to access
                 // user who has any role can access this point.
                 if (exchange.getRequest().getURI().getPath().startsWith("/terminal/")){
                     if (roles.isEmpty()){
-                        String username = jwtUtil.getUsernameFromToken(authHeader);
                         logger.fatal(String.format("user: %s does not have role. ", username));
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     }
@@ -97,7 +93,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 // ~/admin/** endpoints needs admin role to access
                 else if (exchange.getRequest().getURI().getPath().startsWith("/admin/") ){
                     if (!roles.contains("ROLE_ADMIN")){
-                        String username = jwtUtil.getUsernameFromToken(authHeader);
                         logger.info(String.format("user: %s has no admin role to access /admin/** endpoint",username));
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     }
@@ -105,7 +100,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 // ~/operator/** endpoints needs admin role to access
                 else if (exchange.getRequest().getURI().getPath().startsWith("/operator/")){
                     if (!roles.contains("ROLE_OPERATOR")){
-                        String username = jwtUtil.getUsernameFromToken(authHeader);
                         logger.info(String.format("user: %s has no operator role to access /operator/** endpoint",username));
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     }
@@ -113,7 +107,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 // ~/teamleader/** endpoints needs admin role to access
                 else if (exchange.getRequest().getURI().getPath().startsWith("/teamleader/")){
                     if (!roles.contains("ROLE_TEAMLEADER")){
-                        String username = jwtUtil.getUsernameFromToken(authHeader);
                         logger.info(String.format("user: %s has no teamleader role to access /teamleader/** endpoint",username));
                         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
                     }

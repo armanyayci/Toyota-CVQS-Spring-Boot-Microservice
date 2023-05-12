@@ -7,14 +7,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
-        <module name="VehicleDefectService" />
         <module name="discovery-server" />
-        <module name="UserManagementAndTerminalService" />
-        <module name="TokenService" />
+        <module name="operator-teamleader-service" />
+        <module name="admin-terminal-service" />
+        <module name="token-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="TokenService" target="16" />
       <module name="toyotabackend" target="17" />
+      <module name="UserManagementAndTerminalService" target="16" />
+      <module name="VehicleDefectService" target="16" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -22,8 +25,11 @@
       <module name="TokenService" options="-parameters" />
       <module name="UserManagementAndTerminalService" options="-parameters" />
       <module name="VehicleDefectService" options="-parameters" />
+      <module name="admin-terminal-service" options="-parameters" />
       <module name="api-gateway" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
+      <module name="operator-teamleader-service" options="-parameters" />
+      <module name="token-service" options="-parameters" />
       <module name="toyota-microservices" options="-parameters" />
     </option>
   </component>
