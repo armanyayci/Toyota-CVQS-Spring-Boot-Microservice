@@ -37,6 +37,7 @@ public class TestUtils {
                 .description("test")
                 .img(null)
                 .vehicle(null)
+                .error_id(1)
                 .ttDetectLocations(null)
                 .build();
     }
@@ -83,6 +84,7 @@ public class TestUtils {
                         .img(new byte[0])
                         .vehicle(generateVehicle())
                         .description("testDescription")
+                        .error_id(1)
                         .ttDetectLocations(generateListOfDefectLocation())
                         .build()).collect(Collectors.toList());
     }
@@ -94,4 +96,7 @@ public class TestUtils {
         return test.toByteArray();
     }
 
+    public static String generateJson(){
+        return "{\"description\": \"test\", \"errorId\": 1,\"vehicleId\": 1, \"x1\": 0, \"y1\": 0, \"x2\": 10, \"y2\": 10, \"x3\": 20, \"y3\": 20}";
+    }
 }

@@ -52,7 +52,7 @@ class OperatorControllerTest extends TestUtils {
                 .andExpect(status().isOk())
                 .andReturn();
         String responseBody = result.getResponse().getContentAsString();
-        verify(operatorService,times(1)).upload(json,file);
+        verify(operatorService,times(1)).upload(file,json);
         assertEquals("Vehicle Defect and Locations are saved", responseBody);
     }
     @Test

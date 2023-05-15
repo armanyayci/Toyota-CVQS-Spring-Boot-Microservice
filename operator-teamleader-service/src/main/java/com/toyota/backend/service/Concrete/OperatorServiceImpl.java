@@ -46,8 +46,8 @@ public class OperatorServiceImpl implements OperatorService {
      * @throws JsonProcessingException if there is an error while processing the JSON data.
      * @throws IOException if there is an error while uploading the image file.
      */
-    @Override
-    public void upload(String json, MultipartFile file){
+    @Override //String json
+    public void upload(MultipartFile file, String json){
 
         try {
             //used to map between Java objects and JSON data.
@@ -56,7 +56,8 @@ public class OperatorServiceImpl implements OperatorService {
             JsonNode jsonNode = objectMapper.readTree(json);
             //extract the description and vehicle_id filed from the input as text
             String description = jsonNode.get("description").asText();
-            Integer id = jsonNode.get("vehicle_id").asInt();
+            int id = jsonNode.get("vehicleId").asInt();
+            int error_id = jsonNode.get("errorId").asInt();
             //find the vehicle which we want to add defect to it.
             TT_Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(
                     ()-> new NullPointerException(String.format("Vehicle couldn't find with id: %s", id)));
@@ -65,6 +66,7 @@ public class OperatorServiceImpl implements OperatorService {
                     .description(description)
                     .vehicle(vehicle)
                     .img(file.getBytes())
+                    .error_id(error_id)
                     .build();
             vehicleDefectRepository.save(vehicleDefect);
             //find all the defect and get the last saved defect in order to add location in it.
@@ -114,5 +116,7 @@ public class OperatorServiceImpl implements OperatorService {
                 .y2(dto.getY2())
                 .y3(dto.getY3()).build();
         vehicleDefectLocationRepository.save(location);
+        logger.info(String.format("location added to defect, defect-id:%s, defect-locations: %s",defect.getId(),location.getCordinate()));
+
     }
 }

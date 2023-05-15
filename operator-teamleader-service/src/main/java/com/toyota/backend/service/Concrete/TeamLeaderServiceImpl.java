@@ -101,7 +101,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
             Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
             Page<TT_Vehicle_Defect> defectList;
             if (filterYear == 0){
-                logger.debug("filter is default");
+                logger.debug("unfiltered search");
                 defectList = vehicleDefectRepository.findDefectsByVehicleId(name,paging);
             }
             else {
@@ -128,8 +128,10 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
             Page<TT_Vehicle_Defect> defectList;
 
             if (filterYear == 0){
+                logger.debug("unfiltered search");
                 defectList = vehicleDefectRepository.findAll(paging);}
             else {
+                logger.debug(String.format("filtered search, filter-year:%s",filterYear));
                 defectList = vehicleDefectRepository.findAllDefectWithFilter(paging, filterYear);
             }
             if (defectList.isEmpty())

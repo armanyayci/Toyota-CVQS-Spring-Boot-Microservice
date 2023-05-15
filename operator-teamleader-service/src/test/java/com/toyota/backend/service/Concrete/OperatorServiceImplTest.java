@@ -44,7 +44,7 @@ class OperatorServiceImplTest extends TestUtils {
     @Test
     public void upload_whenCalledWithJsonAndMultipartFile_itShouldSuccess(){
 
-        String json = "{\"description\": \"test\", \"vehicle_id\": 1, \"x1\": 0, \"y1\": 0, \"x2\": 10, \"y2\": 10, \"x3\": 20, \"y3\": 20}";
+        String json = generateJson();
         MultipartFile file = new MockMultipartFile("test.jpeg", new byte[0]);
         TT_Vehicle vehicle = generateVehicle();
         TT_Vehicle_Defect vehicleDefect = generateVehicleDefect();
@@ -63,7 +63,7 @@ class OperatorServiceImplTest extends TestUtils {
         defectLocation.setTtVehicleDefect(vehicleDefect);
         when(vehicleDefectLocationRepository.save(defectLocation)).thenReturn(defectLocation);
 
-        operatorService.upload(json, file);
+        operatorService.upload(file,json);
 
         assertEquals(1, defectList.size());
 
@@ -83,11 +83,11 @@ class OperatorServiceImplTest extends TestUtils {
     @Test
     public void upload_whenCalledWithNotExistVehicle_itShouldThrowNullPointerException(){
 
-        String json = "{\"description\": \"test\", \"vehicle_id\": 1, \"x1\": 0, \"y1\": 0, \"x2\": 10, \"y2\": 10, \"x3\": 20, \"y3\": 20}";
+        String json = generateJson();
         MultipartFile file = new MockMultipartFile("test.jpeg", new byte[0]);
         TT_Vehicle vehicle = generateVehicle();
         when(vehicleRepository.findById(vehicle.getId())).thenReturn(Optional.empty());
-        assertThrows(NullPointerException.class,() -> operatorService.upload(json,file));
+        assertThrows(NullPointerException.class,() -> operatorService.upload(file,json));
     }
 
     @Test

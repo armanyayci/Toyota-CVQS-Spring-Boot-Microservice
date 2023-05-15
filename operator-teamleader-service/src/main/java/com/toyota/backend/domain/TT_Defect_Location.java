@@ -77,6 +77,6 @@ public class TT_Defect_Location {
      * @return a string in the format [P(x1,y1),P(x2,y2),P(x3,y3)]
      */
     public String getCordinate() {
-        return String.format("[P(%s,%s),P(%s,%s),P(%s,%s)",x1,y1,x2,y2,x3,y3);
+        return String.format("P(%s,%s),P(%s,%s),P(%s,%s)",x1,y1,x2,y2,x3,y3);
     }
 }

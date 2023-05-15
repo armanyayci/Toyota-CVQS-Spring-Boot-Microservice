@@ -31,7 +31,7 @@ public class OperatorController {
             @RequestParam("json") String json,
             @RequestParam("file") MultipartFile file) {
 
-            operatorService.upload(json,file);
+            operatorService.upload(file,json);
             return ResponseEntity.ok("Vehicle Defect and Locations are saved");
     }
     /**

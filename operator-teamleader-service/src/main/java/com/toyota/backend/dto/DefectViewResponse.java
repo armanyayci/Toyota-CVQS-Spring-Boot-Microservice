@@ -43,6 +43,10 @@ public class DefectViewResponse
      */
     String defect_description;
     /**
+     * The error id of the associated vehicle defect.
+     */
+    int errorId;
+    /**
      * The list of location of the associated vehicle defect.
      */
     List<String> defect_locations;
@@ -67,6 +71,7 @@ public class DefectViewResponse
                         .defect_description(defect.getDescription())
                         .bodyType(defect.getVehicle().getVehicleBody().toString())
                         .defect_locations(defect.getTtDetectLocations().stream().map(TT_Defect_Location::getCordinate).collect(Collectors.toList()))
+                        .errorId(defect.getError_id())
                         .model_year(defect.getVehicle().getModel_year())
                         .vehicle_name(defect.getVehicle().getName())
                         .DrawnId(defect.getId())
@@ -76,7 +81,7 @@ public class DefectViewResponse
             return responseList;
         } catch (UnsupportedOperationException | ClassCastException | NullPointerException |
                  IllegalArgumentException e) {
-            logger.warn("responses couldn't add to list.");
+            logger.debug("responses couldn't add to list.");
             throw e;
         }
     }
