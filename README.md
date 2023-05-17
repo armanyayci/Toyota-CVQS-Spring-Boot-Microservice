@@ -70,7 +70,7 @@ In summary, the project aims to optimize error control and management in vehicle
 
 <a name="database-design"></a>
 ## Database Design
-The database design can be examined in 3 different ways. These are users and roles, vehicles, defects and location informations, and last terminal and category relationships, which we can divide into 3 main headings.
+The database design can be examined in 3 different ways. These are users and roles, vehicles, defects and location information, and last terminal and category relationships, which we can divide into 3 main headings.
 * User and Role Table:
   * It is a table that shows the users and what roles these users have. A user can have at least one role or more roles. For this reason, the relationship between them is set up as many-to-many. Name, email, username, password and isactive information are kept for User Table. For the role table, there is only name information.
 * Vehicle, Defect and Location Table
@@ -82,7 +82,7 @@ The database design can be examined in 3 different ways. These are users and rol
     <br>
     The database diagram is given below.
     <br><br>
-    <img src="https://i.hizliresim.com/11z3zih.jpg" width="1000" height="670">
+    <img src="https://i.hizliresim.com/tti6qtj.jpg" width="900" height="780">
 
 <a name="application-architecture"></a>
 ## Application Architecture
@@ -120,7 +120,7 @@ The DTO layer provides a structured way to transfer data between different layer
 
 <a name="security"></a>
 ## Security
-A role-based authentication and authorization structure has been created using the jwt token to provide access to the relevant enpoints. This structure is provided using the <a href="https://github.com/jwtk/jjwt">JJWT library.</a> There are 3 different roles in accessing endpoints:
+A role-based authentication and authorization structure has been created using the jwt token to provide access to the relevant endpoints. This structure is provided using the <a href="https://github.com/jwtk/jjwt">JJWT library.</a> There are 3 different roles in accessing endpoints:
 * Admin
 * Operator
 * Teamleader
@@ -128,7 +128,7 @@ A role-based authentication and authorization structure has been created using t
 <a name="login"></a>
 ### Login
 
-When user wants to log in user sends a request to the corresponding endpoint to log in, according to the user credentials accuracy and if the activeness of user is true, a unique token is generated for that user and he can access the endpoints according to the permission of the endpoint roles related to this token.
+When user wants to log in user sends a request to the corresponding endpoint to log in, according to the user credentials accuracy and if the activeness of user is true, a unique token is generated for that user, and he can access the endpoints according to the permission of the endpoint roles related to this token.
 
 Login Diagram:
 
@@ -159,7 +159,7 @@ API Gateway acts as an entry point in microservices architecture, receiving inco
 <a name="discovery-server"></a>
 ### Discovery Server
 
-In microservices architecture, where services are distributed and dynamically scaled, a Discovery Server plays a crucial role in service registration and discovery. The Discovery Server acts as a centralized registry or directory where microservices can register themselves and advertise their availability. It allows services to discover and communicate with each other without prior knowledge of their network locations. The Discovery Server maintains an up-to-date registry of all available services and provides a mechanism for service instances to dynamically register, deregister, and update their information. This enables dynamic scaling, load balancing,and fault tolerance within the microservices ecosystem.
+In microservices architecture, where services are distributed and dynamically scaled, a Discovery Server plays a crucial role in service registration and discovery. The Discovery Server acts as a centralized registry or directory where microservices can register themselves and advertise their availability. It allows services to discover and communicate with each other without prior knowledge of their network locations. The Discovery Server maintains an up-to-date registry of all available services and provides a mechanism for service instances to dynamically register, deregister, and update their information. This enables dynamic scaling, load balancing,and fault tolerance within the microservice's ecosystem.
 
 <a name="token-service"></a>
 ### Token Service
@@ -184,16 +184,16 @@ Token service is the place where security transactions are performed in it, chec
 * Operator
 
 
-The operator service allows upload defects to vehicles. It is the place where the coordinates and explanation of the vehicle defect on the picture are given in json to provide tracking of the faulty vehicles leaving the factory by giving the vehicle's image as a MultiparFile. Three (x,y) coordinates are saved to the system. It also allows you to save more than one error to the image on a vehicle. Only the users who has operator role can access this service.
+The operator service allows upload defects to vehicles. It is the place where the coordinates and explanation of the vehicle defect on the picture are given in json to provide tracking of the faulty vehicles leaving the factory by giving the vehicle's image as a MultipartFile. Three (x,y) coordinates are saved to the system. It also allows you to save more than one error to the image on a vehicle. Only the users who have operator role can access this service.
 
 An example uploading process would be like this through postman.
 
-<img src="https://i.hizliresim.com/kuf4zze.jpg" width="800" height="330">
+<img src="https://i.hizliresim.com/21qh896.jpg" width="800" height="330">
 
 * Teamleader
 
 
-The Teamleader service performs a drawing operation based on the locations saved on the image saved by the operator to the database and displays it on the postman. In addition, it provices the <strong>vehicle list, the error list of vehicles by filtering, paging and sorting and the drawn image of defect</strong>. Only users with the teamleader role can access this service.
+The Teamleader service performs a drawing operation based on the locations saved on the image saved by the operator to the database and displays it on the postman. In addition, it provides the <strong>the error list of vehicles by filtering, paging and sorting and the drawn image of defect</strong>. Only users with the teamleader role can access this service.
 
 An example draw response according to the operator's upload would be like this.
 

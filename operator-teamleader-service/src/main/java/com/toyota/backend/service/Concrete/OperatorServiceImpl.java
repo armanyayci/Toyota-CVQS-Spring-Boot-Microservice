@@ -66,7 +66,7 @@ public class OperatorServiceImpl implements OperatorService {
                     .description(description)
                     .vehicle(vehicle)
                     .img(file.getBytes())
-                    .error_id(error_id)
+                    .errorId(error_id)
                     .build();
             vehicleDefectRepository.save(vehicleDefect);
             //find all the defect and get the last saved defect in order to add location in it.

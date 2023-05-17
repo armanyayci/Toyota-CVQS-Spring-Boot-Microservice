@@ -1,19 +1,6 @@
 ---
 version: '3'
 services:
-
-  ## PostgreSQL database
-  postgresql:
-    image: postgres
-    container_name: postgresql
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pwd
-      POSTGRES_DB: toyota
-    ports:
-      - "5432:5432"
-
   ## Eureka Server
   discovery-server:
     image: zormanfayci/discovery-server:latest
@@ -47,7 +34,7 @@ services:
     environment:
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
-      -SPRING_DATASOURCE_PASSWORD: pwd
+      -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
     depends_on:
       - discovery-server
 
@@ -61,7 +48,7 @@ services:
     environment:
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
-      -SPRING_DATASOURCE_PASSWORD: pwd
+      -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
     depends_on:
       - discovery-server
       - api-gateway
@@ -76,7 +63,7 @@ services:
     environment:
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
-      -SPRING_DATASOURCE_PASSWORD: pwd
+      -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
     depends_on:
       - discovery-server
       - api-gateway

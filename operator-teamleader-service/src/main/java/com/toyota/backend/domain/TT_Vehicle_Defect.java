@@ -27,16 +27,19 @@ public class TT_Vehicle_Defect {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    /**
+     * The error id of the vehicle defect.
+     */
+    @Column(name = "errorId",length = 4)
+    private int errorId;
+
+
     /**
      * The description of the vehicle defect.
      */
     @Column(name = "Description",nullable = false, length = 100)
     private String description;
-    /**
-     * The error id of the vehicle defect.
-     */
-    @Column(name = "error_id",nullable = false,length = 4)
-    private int error_id;
 
     /**
      * The byte image of the vehicle defect.

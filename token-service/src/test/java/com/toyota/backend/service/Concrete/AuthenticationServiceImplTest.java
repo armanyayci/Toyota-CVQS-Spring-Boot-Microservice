@@ -97,26 +97,34 @@ class AuthenticationServiceImplTest extends TestUtils {
         assertNotEquals(user.getPassword(),dto.getPassword());
     }
     @Test
-    void isValid_whenCalledWithToken_itShouldReturnBoolean(){
+    void isValid_whenCalledWithExpiredToken_itShouldReturnFalse(){
+
+        String token = "token";
+        when(jwtTokenProvider.isTokenExpired(token)).thenReturn(true);
+        var result = authenticationService.isValid(token);
+        assertFalse(result);
+
+    }
+    @Test
+    void isValid_whenCalledWithNotExpiredToken_itShouldReturnBooleanValue(){
 
         String token="token";
         User user = generateUser();
-        LoginDTO dto = generateLoginDto();
-        when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(dto.getUsername());
-        when(userRepository.getActiveUserByUsername(dto.getUsername())).thenReturn(Optional.of(user));
-
-        authenticationService.isValid(token);
-        verify(userRepository,times(1)).getActiveUserByUsername(dto.getUsername());
-        verify(jwtTokenProvider,times(1)).getUsernameFromToken(token);
+        when(jwtTokenProvider.isTokenExpired(token)).thenReturn(false);
+        when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(user.getUsername());
+        when(userRepository.findByusername(user.getUsername())).thenReturn(Optional.of(user));
+        boolean result = authenticationService.isValid(token);
+        assertEquals(result,user.isEnabled());
     }
     @Test
-    void isValid_whenCalledWithNotExistUserOrDeleted_itShouldThrowNullPointerException(){
-
+    void isValid_whenCalledWithNotExistedUser_itShouldReturnNullPointerException(){
         String token="token";
-        LoginDTO dto = generateLoginDto();
-        when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(dto.getUsername());
-        when(userRepository.getActiveUserByUsername(dto.getUsername())).thenReturn(Optional.empty());
-        assertThrows(NullPointerException.class, () -> authenticationService.isValid(token));
-        verify(userRepository,times(0)).getActiveUserByUsername(token);
+        User user = generateUser();
+        when(jwtTokenProvider.isTokenExpired(token)).thenReturn(false);
+        when(jwtTokenProvider.getUsernameFromToken(token)).thenReturn(user.getUsername());
+        assertThrows(NullPointerException.class,() -> authenticationService.isValid(token));
     }
+
+
+
 }

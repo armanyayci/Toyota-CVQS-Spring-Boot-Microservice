@@ -67,13 +67,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isValid(String token){
-        //get username from token
-        String username = jwtTokenProvider.getUsernameFromToken(token);
 
-        //find active user by username
-        userRepository.getActiveUserByUsername(username).orElseThrow(
-                ()-> new NullPointerException(String.format("active user not found with username(%s) in token",username)));
-        return !jwtTokenProvider.isTokenExpired(token);
+        if (!jwtTokenProvider.isTokenExpired(token)){
+            String username = jwtTokenProvider.getUsernameFromToken(token);
+            User user = userRepository.findByusername(username).orElseThrow(
+                    ()-> new NullPointerException(String.format("user not found with given username: %s",username)));
+            return user.isEnabled();
+        }
+        return false;
     }
 }
 

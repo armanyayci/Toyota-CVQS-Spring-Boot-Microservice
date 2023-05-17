@@ -37,7 +37,7 @@ public class TestUtils {
                 .description("test")
                 .img(null)
                 .vehicle(null)
-                .error_id(1)
+                .errorId(1)
                 .ttDetectLocations(null)
                 .build();
     }
@@ -84,7 +84,7 @@ public class TestUtils {
                         .img(new byte[0])
                         .vehicle(generateVehicle())
                         .description("testDescription")
-                        .error_id(1)
+                        .errorId(1)
                         .ttDetectLocations(generateListOfDefectLocation())
                         .build()).collect(Collectors.toList());
     }

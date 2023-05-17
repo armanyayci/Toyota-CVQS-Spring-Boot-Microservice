@@ -71,7 +71,7 @@ public class DefectViewResponse
                         .defect_description(defect.getDescription())
                         .bodyType(defect.getVehicle().getVehicleBody().toString())
                         .defect_locations(defect.getTtDetectLocations().stream().map(TT_Defect_Location::getCordinate).collect(Collectors.toList()))
-                        .errorId(defect.getError_id())
+                        .errorId(defect.getErrorId())
                         .model_year(defect.getVehicle().getModel_year())
                         .vehicle_name(defect.getVehicle().getName())
                         .DrawnId(defect.getId())

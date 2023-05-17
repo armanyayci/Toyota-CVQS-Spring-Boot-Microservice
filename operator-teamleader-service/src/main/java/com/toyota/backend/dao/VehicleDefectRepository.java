@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
  * in the database regarding vehicle defects.
  */
 @Repository
+@Transactional
 public interface VehicleDefectRepository extends JpaRepository<TT_Vehicle_Defect,Integer> {
     /**
      * Retrieves a page of vehicle defects for a given vehicle name.
@@ -35,11 +36,11 @@ public interface VehicleDefectRepository extends JpaRepository<TT_Vehicle_Defect
      * Retrieves a page of vehicle defects for a given vehicle name and model year.
      * @param name      the name of the vehicle to retrieve the defects for
      * @param pageable  the pagination and sorting information
-     * @param modelYear the model year of the vehicle to retrieve the defects for
+     * @param year the model year of the vehicle to retrieve the defects for
      * @return a page of vehicle defects
      */
-    @Query("select t from TT_Vehicle_Defect t where t.vehicle.name=:name and t.vehicle.model_year =:modelYear")
-    Page<TT_Vehicle_Defect> findDefectsByVehicleNameWithFilter(@Param("name") String name, Pageable pageable, int modelYear);
+    @Query("select t from TT_Vehicle_Defect t where t.vehicle.name=:name and t.vehicle.model_year =:year")
+    Page<TT_Vehicle_Defect> findDefectsByVehicleNameWithFilter(@Param("name") String name, Pageable pageable,@Param("year") int year);
 
     /**
      * Retrieves a page of all vehicle defects for a given model year.

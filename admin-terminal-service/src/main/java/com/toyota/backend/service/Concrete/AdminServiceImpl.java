@@ -22,7 +22,6 @@ import com.toyota.backend.service.Abstract.AdminService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Arman Yaycı
@@ -50,6 +49,7 @@ public class AdminServiceImpl implements AdminService {
      * @throws UnsupportedOperationException If the operation is not supported.
      * @throws ClassCastException If there is a type casting error.
      * @throws IllegalArgumentException If there is an invalid argument.
+     * @throws RuntimeException If there is already registered user in database with username or email.
      */
     @Override
     public AddedUserResponse AuthorizeNewUser(RegisterDTO registerDTO)
@@ -91,22 +91,18 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public void softDeleteUser(String username){
-        try {
-            User user = userRepository.findByusername(username).orElseThrow(
-                    ()-> new NullPointerException(String.format("User not found with username: %s",username)));
-            if (!user.isActive()){
-                logger.info(String.format("user already deleted. id: %s",username));
-                throw new RuntimeException();
-            }
 
-            user.setActive(false);
-            userRepository.save(user);
-            logger.info(String.format("user: %s is soft deleted", username));
+        User user = userRepository.findByusername(username).orElseThrow(
+                ()-> new NullPointerException(String.format("User not found with username: %s",username)));
+        if (!user.isActive()){
+            logger.info(String.format("user already deleted. id: %s",username));
+            throw new RuntimeException();
         }
-        catch (Exception e ){
-            logger.warn(String.format("User couldn't soft deleted. username: %s",username));
-            throw e;
-        }
+
+        user.setActive(false);
+        userRepository.save(user);
+        logger.info(String.format("user: %s is soft deleted", username));
+
     }
     /**
      * Activates a user with the specified id by setting the user's active status to true.
@@ -115,21 +111,17 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public void softActiveUser(String username) {
-        try {
-            User user = userRepository.findByusername(username).orElseThrow(
-                    ()-> new NullPointerException(String.format("User not found with username: %s",username)));
-            if (user.isActive()){
-                logger.info(String.format("user is already active. username: %s",username));
-                throw new RuntimeException();
-            }
-            user.setActive(true);
-            userRepository.save(user);
-            logger.info(String.format("user: %s is activated",username));
+
+        User user = userRepository.findByusername(username).orElseThrow(
+                ()-> new NullPointerException(String.format("User not found with username: %s",username)));
+        if (user.isActive()){
+            logger.info(String.format("user is already active. username: %s",username));
+            throw new RuntimeException();
         }
-        catch (Exception e){
-            logger.warn(String.format("User: %s couldn't activated.",username));
-            throw e;
-        }
+        user.setActive(true);
+        userRepository.save(user);
+        logger.info(String.format("user: %s is activated",username));
+
     }
     /**
      * Updates a user's details with the provided information in the {@link UpdateUserDTO} object.
@@ -140,7 +132,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public UpdatedUserResponse updateUser(UpdateUserDTO dto, String username) {
-        try {
 
             User user = userRepository.findByusername(username).orElseThrow(
                     ()-> new NullPointerException(String.format("User not found with username: %s",username)));
@@ -161,11 +152,7 @@ public class AdminServiceImpl implements AdminService {
             logger.info(String.format("user informations are updated. new username: %s ",dto.getUsername()));
 
             return UpdatedUserResponse.convert(user);
-        }
-        catch (Exception e){
-            logger.warn(String.format("User couldn't updated. username: %s",username));
-            throw e;
-        }
+
     }
     /**
      * Adds a role to a user with the provided information in the {@link AddRemoveRoleDTO} object.

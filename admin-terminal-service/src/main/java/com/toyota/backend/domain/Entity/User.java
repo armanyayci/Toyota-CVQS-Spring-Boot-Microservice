@@ -37,7 +37,7 @@ public class User {
     /**
      * The username of the User, which is not nullable and can have a maximum length of 50 characters.
      */
-    @Column(name = "Username", nullable = false, length = 50)
+    @Column(name = "Username", nullable = false, length = 50,unique = true)
     private String username;
     /**
      * The password of the User, which is not nullable and can have a maximum length of 100 characters.
@@ -47,12 +47,12 @@ public class User {
     /**
      * The email of the User, which is not nullable and can have a maximum length of 50 characters.
      */
-    @Column(name = "Email", nullable = false, length = 50)
+    @Column(name = "Email", nullable = false, length = 50,unique = true)
     private String email;
     /**
      * Flag indicating whether the User is active or not.
      */
-    @Column(name = "isActive")
+    @Column(name = "isActive",nullable = false)
     private boolean isActive;
     /**
      * Represents a many-to-many relationship between users and roles.
