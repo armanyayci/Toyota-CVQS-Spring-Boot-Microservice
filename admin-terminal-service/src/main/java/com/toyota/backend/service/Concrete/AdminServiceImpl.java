@@ -1,11 +1,13 @@
 package com.toyota.backend.service.Concrete;
 
+import com.toyota.backend.event.RegisteredUserEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.toyota.backend.dao.RoleRepository;
@@ -27,7 +29,7 @@ import java.util.List;
  * @author Arman Yaycı
  * @since 01.05.2023
  * This class provides an implementation for the {@link AdminService} interface, handling all the business logic related to
- * admin operations on users and roles. It contains methods to authorize new users, delete and activate users, update user
+ * admin operations on users and roles. It contains methods to authorize new users, delete and activate users,
  * details, add or remove roles from users, get user details and get all active users.
  * The class uses constructor injection to inject instances of {@link RoleRepository}, {@link UserRepository}, and
  * {@link PasswordEncoder} to access and manipulate data related to roles and users.
@@ -41,8 +43,10 @@ public class AdminServiceImpl implements AdminService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaTemplate<String, RegisteredUserEvent> kafkaTemplate;
     /**
      * Authorizes a new user to the system by creating a new user with the provided information in the {@link RegisterDTO} object.
+     * Sends an email to registered user with kafka.
      * @param registerDTO The DTO containing user registration information.
      * @return An instance of {@link AddedUserResponse} that contains the newly created user's details.
      * @throws NullPointerException If the role is not found with the roleId specified in the {@link RegisterDTO} object.
@@ -72,6 +76,7 @@ public class AdminServiceImpl implements AdminService {
                     .roles(rolelist)
                     .build();
             userRepository.save(user);
+            kafkaTemplate.send("notificationTopic",new RegisteredUserEvent(user.getName(), user.getUsername(), registerDTO.getPassword(),user.getEmail()));
             logger.info(String.format("user saved to database with username: %s",registerDTO.getUsername()));
 
             return AddedUserResponse.builder()
@@ -98,11 +103,9 @@ public class AdminServiceImpl implements AdminService {
             logger.info(String.format("user already deleted. id: %s",username));
             throw new RuntimeException();
         }
-
         user.setActive(false);
         userRepository.save(user);
         logger.info(String.format("user: %s is soft deleted", username));
-
     }
     /**
      * Activates a user with the specified id by setting the user's active status to true.
@@ -121,7 +124,6 @@ public class AdminServiceImpl implements AdminService {
         user.setActive(true);
         userRepository.save(user);
         logger.info(String.format("user: %s is activated",username));
-
     }
     /**
      * Updates a user's details with the provided information in the {@link UpdateUserDTO} object.
@@ -142,7 +144,6 @@ public class AdminServiceImpl implements AdminService {
                     logger.info(String.format("username(%s) or email(%s) that want to update is already registered in the db.",dto.getUsername(),dto.getEmail()));
                     throw new RuntimeException();
                 }
-
             }
             user.setName(dto.getName());
             user.setEmail(dto.getEmail());
@@ -152,7 +153,6 @@ public class AdminServiceImpl implements AdminService {
             logger.info(String.format("user informations are updated. new username: %s ",dto.getUsername()));
 
             return UpdatedUserResponse.convert(user);
-
     }
     /**
      * Adds a role to a user with the provided information in the {@link AddRemoveRoleDTO} object.
@@ -184,7 +184,6 @@ public class AdminServiceImpl implements AdminService {
             throw e;
         }
     }
-
 /**
      * Removes a role from the user with provided information in the {@link AddRemoveRoleDTO} object.
      * @param dto the DTO containing the username and roleId of the user.
@@ -235,7 +234,6 @@ public class AdminServiceImpl implements AdminService {
 
         Pageable paging = PageRequest.of(page, size, Sort.by(sortBy));
         Page<User> userList;
-
         if (filter.isEmpty()){
             userList = userRepository.getActiveUsers(paging);
             return UserViewResponse.convertUserListToUserViewResponse(userList);}
@@ -279,24 +277,3 @@ public class AdminServiceImpl implements AdminService {
         return UserViewResponse.convertUserViewResponse(user);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

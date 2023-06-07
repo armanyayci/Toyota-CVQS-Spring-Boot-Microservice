@@ -9,6 +9,7 @@
         <module name="api-gateway" />
         <module name="discovery-server" />
         <module name="operator-teamleader-service" />
+        <module name="notification-service" />
         <module name="admin-terminal-service" />
         <module name="token-service" />
       </profile>
@@ -28,6 +29,7 @@
       <module name="admin-terminal-service" options="-parameters" />
       <module name="api-gateway" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="operator-teamleader-service" options="-parameters" />
       <module name="token-service" options="-parameters" />
       <module name="toyota-microservices" options="-parameters" />

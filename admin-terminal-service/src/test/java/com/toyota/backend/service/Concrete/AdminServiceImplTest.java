@@ -11,11 +11,13 @@ import com.toyota.backend.dto.response.AddedUserResponse;
 import com.toyota.backend.dto.response.UpdatedUserResponse;
 import com.toyota.backend.dto.response.UserViewResponse;
 import com.toyota.backend.TestUtils;
+import com.toyota.backend.event.RegisteredUserEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -39,13 +41,15 @@ class AdminServiceImplTest extends TestUtils {
     private RoleRepository roleRepository;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private KafkaTemplate<String, RegisteredUserEvent> kafkaTemplate;
 
     @BeforeEach
     void setUp() {
         roleRepository = Mockito.mock(RoleRepository.class);
         userRepository = Mockito.mock(UserRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        adminService = new AdminServiceImpl(roleRepository,userRepository,passwordEncoder);
+        kafkaTemplate = Mockito.mock(KafkaTemplate.class);
+        adminService = new AdminServiceImpl(roleRepository,userRepository,passwordEncoder,kafkaTemplate);
     }
 
     @Test
@@ -57,7 +61,7 @@ class AdminServiceImplTest extends TestUtils {
         when(roleRepository.findById(any(Integer.class))).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPasswordTest");
         when(userRepository.save(any(User.class))).thenReturn(new User());
-
+        when(kafkaTemplate.send(any(String.class), any(RegisteredUserEvent.class))).thenReturn(null);
         AddedUserResponse response = adminService.AuthorizeNewUser(dto);
 
         assertThat(response).isNotNull();

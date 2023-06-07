@@ -1,6 +1,30 @@
 ---
 version: '3'
 services:
+  # Kafka & ZooKeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
   ## Eureka Server
   discovery-server:
     image: zormanfayci/discovery-server:latest
@@ -24,7 +48,7 @@ services:
       - discovery-server
       - token-service
 
-  ## Token-Service Docker Compose Config
+  ## Token-Service
   token-service:
     container_name: token-service
     image: zormanfayci/token-service:latest
@@ -38,7 +62,7 @@ services:
     depends_on:
       - discovery-server
 
-  ## admin-terminal-service Docker Compose Config
+  ## admin-terminal-service
   admin-terminal-service:
     container_name: admin-terminal-service
     image: zormanfayci/admin-terminal-service:latest
@@ -53,7 +77,7 @@ services:
       - discovery-server
       - api-gateway
 
-    ## operator-teamleader-service
+  ## operator-teamleader-service
   operator-teamleader-service:
     container_name: operator-teamleader-service
     image: zormanfayci/operator-teamleader-service:latest
@@ -67,3 +91,15 @@ services:
     depends_on:
       - discovery-server
       - api-gateway
+
+  ## Notification-Service
+  notification-service:
+    container_name: notification-service
+    image: zormanfayci/notification-service:latest
+    pull_policy: always
+    ports:
+      - "8084:8084"
+    environment:
+      -SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - admin-terminal-service
