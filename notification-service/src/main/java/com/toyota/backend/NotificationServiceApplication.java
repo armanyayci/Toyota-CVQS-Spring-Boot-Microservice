@@ -1,7 +1,7 @@
 package com.toyota.backend;
 
 import com.toyota.backend.event.RegisteredUserEvent;
-import com.toyota.backend.service.MailService;
+import com.toyota.backend.service.Concrete.MailServiceImpl;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,12 +18,12 @@ import org.springframework.kafka.annotation.KafkaListener;
 public class NotificationServiceApplication {
 
     private final Logger logger = Logger.getLogger(NotificationServiceApplication.class);
-    private final MailService service;
+    private final MailServiceImpl service;
     /**
      * Constructs a new NotificationServiceApplication with the specified MailService.
      * @param service the MailService used to send email notifications
      */
-    public NotificationServiceApplication(MailService service) {
+    public NotificationServiceApplication(MailServiceImpl service) {
         this.service = service;
     }
     /**

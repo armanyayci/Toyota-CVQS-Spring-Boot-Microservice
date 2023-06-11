@@ -32,6 +32,8 @@ services:
     pull_policy: always
     ports:
       - "8761:8761"
+    environment:
+      -SPRING_PROFILES_ACTIVE: docker
 
   ## Api-gateway
   api-gateway:
@@ -43,10 +45,12 @@ services:
     expose:
       - "8080"
     environment:
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+      -SPRING_PROFILES_ACTIVE: docker
+      -LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: TRACE
     depends_on:
       - discovery-server
       - token-service
+      - zipkin
 
   ## Token-Service
   token-service:
@@ -56,6 +60,7 @@ services:
     ports:
       - "8083:8083"
     environment:
+      -SPRING_PROFILES_ACTIVE: docker
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
       -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
@@ -70,6 +75,7 @@ services:
     ports:
       - "8081:8081"
     environment:
+      -SPRING_PROFILES_ACTIVE: docker
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
       -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
@@ -85,6 +91,7 @@ services:
     ports:
       - "8082:8082"
     environment:
+      -SPRING_PROFILES_ACTIVE: docker
       -SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/toyota
       -SPRING_DATASOURCE_USERNAME: postgres
       -SPRING_DATASOURCE_PASSWORD: 1q2w3e4r
@@ -103,3 +110,10 @@ services:
       -SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - admin-terminal-service
+
+  ## Zipkin
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"

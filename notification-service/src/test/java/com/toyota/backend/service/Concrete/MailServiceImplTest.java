@@ -1,4 +1,4 @@
-package com.toyota.backend.service;
+package com.toyota.backend.service.Concrete;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,16 +13,16 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Arman Yaycı
  * @since 07.06.2023
- * Unit tests for the {@link MailService} class.
+ * Unit tests for the {@link MailServiceImpl} class.
  */
 @SpringBootTest
-class MailServiceTest {
-    private MailService service;
+class MailServiceImplTest {
+    private MailServiceImpl service;
     private JavaMailSender sender;
     @BeforeEach
     void SetUp(){
         sender= mock(JavaMailSender.class);
-        service = new MailService(sender);
+        service = new MailServiceImpl(sender);
     }
     @Test
     void sendEmail_whenCalledWithProvidedRegisteredUserEventParameters_itShouldSendMail(){
