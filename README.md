@@ -24,6 +24,7 @@ This repository is a CVQS (Complete Vehicle Quality System) application for Toyo
   * [Token Service](#token-service)
   * [Admin-Terminal Service](#admin-terminal-service)
   * [Operator-Teamleader-Service](#operator-teamleader-service)
+  * [Notification-Service](#notification-service)
 * [Unit Tests](#unit-tests)
 * [Docker](#docker)
   * [Docker Hub](#docker-hub)
@@ -53,8 +54,8 @@ In summary, the project aims to optimize error control and management in vehicle
 - Log4j
 - JUnit5
 - Lombok
-- Netflix Eureka
 - Docker
+- Spring Cloud (Apigateway, Eureka, Kafka, Zipkin)
 
 <a name="points-of-attention"></a>
 ## Points of Attention
@@ -149,7 +150,7 @@ Request to AnyEndpoint Diagram:
 <a name="microservices-architecture"></a>
 ## Microservice Architecture
 
-<img src="https://i.hizliresim.com/6io9uso.png" width="800" height="530">
+<img src="https://i.hizliresim.com/gqxoxpu.png" width="800" height="600">
 
 <a name="apigateway"></a>
 ### ApiGateway
@@ -199,6 +200,13 @@ An example draw response according to the operator's upload would be like this.
 
 <img src="https://i.hizliresim.com/aafm063.jpg" width="800" height="480">
 
+<a name="notification-service"></a>
+### Notification Service
+
+When the user is registered by the admin, the admin service is listened to by the notification-service asynchronously with the kafka and Event Driven Architecture. The user information registered with this communication is sent as a message by kafka and an e-mail is sent to the registered user using this information by the notification service.
+
+<img src="https://i.hizliresim.com/8wbcced.jpg" width="656" height="317">
+
 <a name="unit-tests"></a>
 ## Unit Tests
 
@@ -212,7 +220,7 @@ The project contains a dedicated package for test classes, which follows the sam
 
   The project aims for comprehensive test coverage to minimize the risk of undiscovered bugs. Critical sections such as business logic, and error handling are prioritized for thorough testing.
 
-<img src="https://i.hizliresim.com/qt8e6g7.jpg">
+<img src="https://i.hizliresim.com/mbim3ia.jpg">
 
 <a name="docker"></a>
 ## Docker
