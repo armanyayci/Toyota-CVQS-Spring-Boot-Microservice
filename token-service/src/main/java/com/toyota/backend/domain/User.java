@@ -95,18 +95,13 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
     /**
      * Returns a boolean indicating whether the User's account is enabled.
      * @return boolean indicating whether the User's account is enabled
      */
     @Override
     public boolean isEnabled() {
-
-        if (isActive){
-            return true;
-        }
-        return false;
+        return isActive;
     }
 }
 
